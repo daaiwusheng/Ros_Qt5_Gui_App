@@ -20,6 +20,11 @@ find_package(catkin REQUIRED COMPONENTS rviz roscpp sensor_msgs
     std_msgs
     image_transport
     )
+# in this file, we must set the below codes here, or it can not find packages.
+# 下面这一行每个人每台电脑都有可能不一样,每个人可以新加一行自己的路径,不要更改别人的路径.注释好, 或者不要提交到git,
+# set(CMAKE_PREFIX_PATH "/opt/Qt5.14.2/5.14.2/gcc_64") #王宇, mac虚拟机ubuntu18.04
+# set(CMAKE_PREFIX_PATH "/home/wangyu_kyland/Qt5.9.9/5.9.9/gcc_64") # kyland ubuntu18.04
+set(CMAKE_PREFIX_PATH "/home/wangyu/Qt5.9.9/5.9.9/gcc_64") # mac 15year ubuntu18.04
 
 find_package(Qt5 REQUIRED Core Widgets Multimedia)
 set(QT_LIBRARIES Qt5::Widgets Qt5::Multimedia)
@@ -36,6 +41,26 @@ catkin_package()
 # this comes from qt_build's qt-ros.cmake which is automatically 
 # included via the dependency call in package.xml
 #rosbuild_prepare_qt4(QtCore QtGui) # Add the appropriate components to the component list here
+
+
+
+set(ModuleList
+    Core
+    Gui
+    Widgets
+    Multimedia
+    Network
+)
+
+foreach(QtModule ${ModuleList})
+    set(Qt5${QtModule}_DIR ${CMAKE_PREFIX_PATH}/lib/cmake/Qt5${QtModule})
+    message("foreach-> Qt5${QtModule}_DIR : ${Qt5${QtModule}_DIR}")
+
+    set(QT_LIBRARIES ${QT_LIBRARIES} Qt5::${QtModule})
+endforeach()
+message("${QT_LIBRARIES}")
+
+find_package(Qt5 REQUIRED ${ModuleList})
 
 ##############################################################################
 # Sections
